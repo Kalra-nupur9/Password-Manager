@@ -1,0 +1,128 @@
+const [showPass, setShowPass] = useState(false);
+  const [form, setform] = useState({ site: "", username: "", password: "" });
+  const [passwordArray, setpasswordArray] = useState([]);
+
+  useEffect(() => {
+    let passwords = localStorage.getItem("passwords");
+    if (passwords) {
+      setpasswordArray(JSON.parse(passwords)); // Correct usage of the state setter function
+    }
+  }, []);
+
+  const showPassword = () => {
+    setShowPass(!showPass);
+  };
+
+  const savePassword = () => {
+    const updatedPasswords = [...passwordArray, {...form, id: uuidv4()}];
+    setpasswordArray(updatedPasswords);
+    localStorage.setItem("passwords", JSON.stringify(updatedPasswords));
+    setform({ site: "", username: "", password: "" });
+  };
+
+  const deletePassword = (id) => {
+
+    const updatedPasswords = passwordArray.filter(item => item.id !== id);
+    setpasswordArray(updatedPasswords);
+    localStorage.setItem("passwords", JSON.stringify(updatedPasswords));
+  };
+  const editPassword = (id) => {
+    
+    const itemToEdit = passwordArray.find(item => item.id === id);
+    if (itemToEdit) {
+        setform({ site: itemToEdit.site, username: itemToEdit.username, password: itemToEdit.password });
+        deletePassword(id); 
+    }
+};
+
+  const handleChange = (e) => {
+    setform({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const copyText = (text) => {
+    navigator.clipboard.writeText(text);
+  };
+  const clearStorage = () => {
+    localStorage.removeItem("passwords");
+    setpasswordArray([]);
+  };
+
+  const isFormValid = form.site && form.username && form.password;
+
+
+
+
+  
+
+
+
+<div
+            className={w-full custom-scrollbar ${
+              passwordArray.length !== 0 ? "h-48 overflow-y-scroll" : "h-auto"
+            }}
+          >
+            {passwordArray.length === 0 && (
+              <div className="text-center py-5 text-violet-400 font-bold uppercase">
+                ...no password To Show...{" "}
+              </div>
+            )}
+            {passwordArray.length !== 0 && (
+              <table className="table-auto w-full">
+                <thead>
+                  <tr className="bg-violet-400 h-10 ">
+                    <th className="border border-violet-100">Site</th>
+                    <th className="border border-violet-100">Username</th>
+                    <th className="border border-violet-100">Password</th>
+                    <th className="border border-violet-100">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {passwordArray.map((item, index) => {
+                    return (
+                      <tr key={index_id} className=" ">
+                        <td className="border border-violet-500 p-2 text-center">
+                          <span className="inline-flex items-center gap-2">
+                            {item.site}{" "}
+                            <FaCopy
+                              className="colorPurple cursor-pointer"
+                              onClick={() => copyText(item.site)}
+                            />
+                          </span>
+                        </td>
+
+                        <td className="border border-violet-500 p-2 text-center">
+                          <span className="inline-flex items-center gap-2">
+                            {item.username}{" "}
+                            <FaCopy
+                              className="colorPurple cursor-pointer"
+                              onClick={() => copyText(item.username)}
+                            />
+                          </span>
+                        </td>
+
+                        <td className="border border-violet-500 p-2 text-center">
+                          <span className="inline-flex items-center gap-2">
+                            {item.password}{" "}
+                            <FaCopy
+                              className="colorPurple cursor-pointer"
+                              onClick={() => copyText(item.password)}
+                            />
+                          </span>
+                        </td>
+                        <td className="border border-violet-500 p-2 text-center">
+                          <span className="inline-flex items-center gap-2">
+                            <FaEdit
+                              className="colorPurple cursor-pointer"
+                              onClick={() => editPassword(item._id)}
+                            />
+                            <MdDelete
+                              className="colorPurple cursor-pointer"
+                              onClick={() => deletePassword(item._id)}
+                            />
+                          </span>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
