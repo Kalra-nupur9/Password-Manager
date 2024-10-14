@@ -54,12 +54,12 @@ const NavBar = () => {
             <a href="/" className="hover:font-bold">
               Home
             </a>
-            <a href="#" className="hover:font-bold">
+            {/* <a href="#" className="hover:font-bold">
               About Us
             </a>
             <a href="#" className="hover:font-bold">
               Storage
-            </a>
+            </a> */}
           </li>
         </ul>
         
